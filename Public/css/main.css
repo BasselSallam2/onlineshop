@@ -1,0 +1,170 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    background-color: #333;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 16px;
+}
+
+header nav ul li a:hover,
+header nav ul li a.active {
+    background-color: #555;
+    border-radius: 5px;
+}
+
+/* Product Card Styles */
+.product-card {
+    background-color: white;
+    width: 300px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    text-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.product-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+
+.price {
+    font-size: 20px;
+    color: #e74c3c;
+    margin: 10px 0;
+}
+
+.description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.add-to-cart {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background-color: #27ae60;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* The container for the product cards */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 20px; /* Spacing between the cards */
+    padding: 20px; /* Optional: padding around the grid */
+    grid-template-rows: auto; /* Adjusts row heights automatically */
+}
+
+/* Styling for each product card */
+.product-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Product image styling */
+.product-card img {
+    width: 100%;
+    height: auto;
+    max-width: 200px; /* You can control the max width here */
+    margin-bottom: 15px;
+}
+
+/* Styling for the product title */
+.product-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Styling for the product price */
+.price {
+    color: #f68d36;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Styling for the product description */
+.description {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Styling for the "Add to Cart" button */
+.add-to-cart {
+    background-color: #f68d36;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.add-to-cart:hover {
+    background-color: #e77c2a;
+}
+
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+}
+

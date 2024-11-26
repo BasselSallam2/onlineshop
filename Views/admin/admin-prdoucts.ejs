@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include ('../Includes/head.ejs') %>
+<link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <header>
+        <%- include ('../Includes/navigator.ejs') %>
+    </header>
+
+    <div class="product-grid">
+        <% if (producat.length < 1) { %>
+            <p>No products yet.</p>
+        <% } else { %>
+            <% for (let key of producat) { %>
+                <div class="product-card">
+                    <img src="<%= key.url %>" alt="Product Image">
+                    <h2 class="product-title"><%= key.name %></h2>
+                    <p class="price"><%= key.price %></p>
+                    <p class="description"><%= key.desc %></p>
+                    
+                    <!-- Edit and Remove Buttons -->
+                    <button class="edit-btn">Edit</button>
+                    <button class="remove-btn">Remove</button>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
+
+    <%- include ('../Includes/end.ejs') %>
+</body>
+</html>
