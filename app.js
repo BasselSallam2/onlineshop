@@ -1,35 +1,24 @@
-const express = require('express') ;
-const path = require('path') ;
-const app = express() ;
+const path = require('path');
 
-const shoprouter = require('./Routes/shop') ;
-const defultrouter = require('./Routes/defult') ;
-const adminrouter = require('./Routes/admin') ;
-app.set('view engine' , 'ejs') ;
-app.set('views' ,'Views') ;
-
-app.use('/' , express.static(path.join(__dirname, 'Public')));
-app.use('/shop' , express.static(path.join(__dirname, 'Public')));
-app.use('/admin' , express.static(path.join(__dirname, 'Public')));
-
+const express = require('express');
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+const errorController = require('./controllers/error');
 
-app.use('/shop' ,shoprouter );
-app.use('/admin' ,adminrouter ) ;
+const app = express();
 
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
-app.use('/' ,defultrouter ) ;
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(3000) ;
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
+app.use(errorController.get404);
 
-
-
-
-
-
-
+app.listen(3000);

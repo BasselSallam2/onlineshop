@@ -1,0 +1,10 @@
+
+<div class="card__actions">
+    <form action="/cart" method="post" style="display:inline;">
+        <input type="hidden" name="product_id" value="<%= productID %>">
+        <input type="hidden" name="product_price" value="<%= productPRICE %>">
+        <input type="hidden" name="product_url" value="<%= productURL %>">
+        <input type="hidden" name="product_title" value="<%= productTITLE %>">
+        <button class="btn" type="submit">Add Cart</button>
+    </form>
+</div>
