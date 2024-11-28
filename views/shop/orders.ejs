@@ -1,9 +1,32 @@
 <%- include('../includes/head.ejs') %>
-    </head>
-
-    <body>
-        <%- include('../includes/navigation.ejs') %>
-        <main>
-            <h1>Nothing there!</h1>
-        </main>
-        <%- include('../includes/end.ejs') %>
+<div class="container">
+  <h1>Your Orders</h1>
+  <ul class="orders">
+    <% if (orders.length > 0) { %>
+      <% orders.forEach(order => { %>
+        <li class="order">
+          <h2>Order ID: <%= order.id %></h2>
+          <ul class="order-items">
+            <% let totalCost = 0; %>
+            <% order.products.forEach(product => { %>
+              <% totalCost += product.orderItem.price * product.orderItem.quantity; %>
+              <li class="order-item">
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>" class="product-image" />
+                <div>
+                  <h3><%= product.title %></h3>
+                  <p>Price: $<%= product.orderItem.price.toFixed(2) %></p>
+                  <p>Quantity: <%= product.orderItem.quantity %></p>
+                  <p>Total: $<%= (product.orderItem.price * product.orderItem.quantity).toFixed(2) %></p>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+          <h3>Total Order Cost: $<%= totalCost.toFixed(2) %></h3>
+        </li>
+      <% }); %>
+    <% } else { %>
+      <p>No orders found.</p>
+    <% } %>
+  </ul>
+</div>
+<%- include('../includes/end.ejs') %>

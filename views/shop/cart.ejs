@@ -4,25 +4,24 @@
 
 <body>
     <%- include('../includes/navigation.ejs') %>
-
     <main>
         <% if (prods.length > 0) { %>
             <div class="grid">
                 <% for (let item of prods) { %>
                     <article class="card product-item">
                         <header class="card__header">
-                            <h1 class="product__title"><%= item.products.title %></h1>
+                            <h1 class="product__title"><%= item.dataValues.title %></h1>
                         </header>
                         <div class="card__image">
-                            <img src="<%= item.products.URL %>" alt="<%= item.products.title %>">
+                            <img src="<%= item.dataValues.imageUrl %>" alt="<%= item.dataValues.title %>">
                         </div>
                         <div class="card__content">
-                            <h2 class="product__price">$<%= item.totalprice %> <span>Total Cost</span></h2>
-                            <p class="product__description">Quantity: <%= item.products.qty %></p>
+                            <h2 class="product__price">$<%= item.dataValues.price * item.dataValues.cartItem.dataValues.quantity %> <span>Total Cost</span></h2>
+                            <p class="product__description">Quantity: <%= item.dataValues.cartItem.dataValues.quantity %></p>
 
                             <!-- Delete Button Form -->
                             <form action="/cartDeleted" method="POST">
-                                <input type="hidden" name="product_id" value="<%= item.products.id %>">
+                                <input type="hidden" name="product_id" value="<%= item.dataValues.productID %>">
                                 <button type="submit" class="delete-button">Delete</button>
                             </form>
                         </div>
@@ -40,7 +39,7 @@
                     <h3>Total of Cart:</h3>
                     <!-- Calculate the total cost of the cart -->
                     <% let totalCartPrice = 0; %>
-                    <% prods.forEach(item => { totalCartPrice += item.totalprice; }); %>
+                    <% prods.forEach(item => { totalCartPrice += (item.dataValues.price * item.dataValues.cartItem.dataValues.quantity) ; }); %>
                     <h2>$<%= totalCartPrice %></h2>
                 </div>
 

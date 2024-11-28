@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const Cart = require('../models/cart');
 const Product = require('../models/product');
 
@@ -16,46 +17,64 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, imageUrl, description, price);
-  product.save()
-  .then(() => res.redirect('/')) 
+  req.user.createProduct({
+    title:title ,
+    price:price ,
+    imageUrl:imageUrl,
+    description:description ,
+    userUserID: req.user.userID
+  }).then(() => res.redirect('/')) 
   .catch((err) => {
     console.log(err) ;
-  });
+  });  
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
+  Product.findAll().then( products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products'
     });
-  });
+  }).catch(err => {
+    console.log(err) ;
+  })
 };
 
 exports.PostEditProduct = (req, res, next) => {
   const id = req.body.productId ;
-  Product.fetchID(id , product => {
-  res.render('admin/edit-product' , {
+  req.user.getProducts({where: {productID : id}})
+  /*Product.findByPk(id)*/.then(product => {
+    console.log(product) ;
+    res.render('admin/edit-product' , {
     pageTitle : 'edit product' ,
     path : '/admin/products' ,
-    prods : product,
-    ProductID : id
+    prods : product[0],
+    ProductID : id,
   });
+  }).catch(err => {
+    console.log(err) ;
   });
   };
 
   exports.PostFinishedEdit = (req,res,next) => {
-  Product.EditProduct(req.body.title , req.body.imageUrl , req.body.price , req.body.description ,req.body.productID ,
-    () => res.redirect('/') );
-  }
+  Product.findByPk(req.body.productID).then(product => {
+    product.title = req.body.title  ;
+    product.price = req.body.price ;
+    product.imageUrl =  req.body.imageUrl ;
+    product.description = req.body.description ;
+    return product.save();
+  }).then(() => res.redirect('/') )
+  .catch(err => {
+    console.log(err) ;
+  });
+  };
 
   exports.PostDeleteProduct = (req , res , next) => {
-    Product.DeleteProduct(req.body.productId , () => Cart.DeleteCart(req.body.productId , () => 
-            res.redirect('/')) ) ;
-    
-
-    
-  }
+  Product.destroy({where: {productID: req.body.productId}})
+  .then(() => res.redirect('/'))
+  .catch(err => {
+    console.log(err) ;
+  });
+  };
 
