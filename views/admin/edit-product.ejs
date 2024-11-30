@@ -10,7 +10,7 @@
         <form class="product-form" action="/admin/Finished-edit" method="POST">
             <div class="form-control">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" value=" <%= prods.title %>">
+                <input type="text" name="title" id="title" value="<%= prods.title %>">
             </div>
             <div class="form-control">
                 <label for="imageUrl">Image URL</label>
@@ -23,7 +23,7 @@
             <div class="form-control">
                 <label for="description">Description</label>
                 <textarea name="description" id="description" rows="5"><%= prods.description %></textarea>
-                <input type="hidden" name="productID" id="productID" value=" <%=ProductID%>">
+                <input type="hidden" name="productID" id="productID" value="<%= ProductID %>">
             </div>
 
             <button class="btn" type="submit">Edit Product</button>

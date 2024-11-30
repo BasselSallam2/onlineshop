@@ -2,6 +2,7 @@ const Product = require('../models/product');
 const Cart = require('../models/cart') ;
 const { where } = require('sequelize');
 const Order = require('../models/order') ;
+const CartItem = require('../models/cart-item') ;
 
 exports.getProducts = (req, res, next) => {
   //Product.findAll()
@@ -55,12 +56,7 @@ exports.getIndex = (req, res, next) => {
 
 
 
-exports.getOrders = (req, res, next) => {
-  res.render('shop/orders', {
-    path: '/orders',
-    pageTitle: 'Your Orders'
-  });
-};
+
 
 
 
@@ -145,34 +141,43 @@ exports.PostDeleteCart = (req , res , next) => {
 }
 
 
-exports.PostChackout = (req , res , next) => {
-  let neworder;
-  let thiscart;
- req.user.createOrder()
- .then(ord => {
-  neworder = ord ;
- })
- .then(() => {
-  return req.user.getCart()
- })
-  .then(cart => {
-    thiscart = cart ;
-    return cart.getProducts()
+exports.PostCheckout = (req , res , next) => {
+req.user.getCart()
+.then((cart) =>{
+  return cart.getProducts() ;
+})
+.then((products) => {
+  return req.user.createOrder()
+  .then((order) => {
+    products.map(product => {
+      order.addProduct(product , {through : {quantity : product.cartItem.quantity }});
+    });
   })
-  .then(product => {
-    neworder.addProducts( 
-        product.map(product => {
-        product.OrderItem = { quantity: product.cartItem.quantity }; // Map quantity from CartItem to OrderItem
-        return product;
-      })
-    )
-  })
-  .then( () => {
-    return thiscart.setProducts(null);
-  } )
-  .then(() => res.redirect('/checkOUT'))
-  .catch(err => {
-    console.log(err) ;
-  })
+  .catch()
+})
+.then(() => {
+    CartItem.destroy({where : {cartId : 1}}) ;
+})
+.then(() => res.redirect('/orders'))
+.catch((err) => {
+  console.log(err) ;
+});
 
+};
+
+
+
+
+exports.getOr = (req, res, next) => {
+  req.user.getOrders({include : ['products']})
+  .then((order) => {
+    console.log(order) ;
+    res.render('shop/orders', {
+      orders: order ,
+      path: '/orders',
+      pageTitle: 'Your Orders'
+    })
+  })
+  .catch() ;
+  
 };

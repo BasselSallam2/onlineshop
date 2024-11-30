@@ -6,6 +6,8 @@ const adminController = require('../controllers/admin');
 
 const router = express.Router();
 
+router.post('/Finished-edit' , adminController.PostFinishedEdit);
+
 // /admin/add-product => GET
 router.get('/add-product', adminController.getAddProduct);
 
@@ -17,7 +19,7 @@ router.post('/add-product', adminController.postAddProduct);
 
 router.post('/edit-product' , adminController.PostEditProduct ) ;
 
-router.post('/Finished-edit' , adminController.PostFinishedEdit);
+
 
 router.post('/delete-product' , adminController.PostDeleteProduct);
 

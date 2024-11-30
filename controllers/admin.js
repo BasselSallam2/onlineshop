@@ -21,8 +21,7 @@ exports.postAddProduct = (req, res, next) => {
     title:title ,
     price:price ,
     imageUrl:imageUrl,
-    description:description ,
-    userUserID: req.user.userID
+    description:description 
   }).then(() => res.redirect('/')) 
   .catch((err) => {
     console.log(err) ;
@@ -43,13 +42,13 @@ exports.getProducts = (req, res, next) => {
 
 exports.PostEditProduct = (req, res, next) => {
   const id = req.body.productId ;
-  req.user.getProducts({where: {productID : id}})
-  /*Product.findByPk(id)*/.then(product => {
-    console.log(product) ;
+  Product.findByPk(id)
+  .then(product => {
+   console.log(product) ;
     res.render('admin/edit-product' , {
+    prods : product,
     pageTitle : 'edit product' ,
     path : '/admin/products' ,
-    prods : product[0],
     ProductID : id,
   });
   }).catch(err => {
@@ -57,19 +56,7 @@ exports.PostEditProduct = (req, res, next) => {
   });
   };
 
-  exports.PostFinishedEdit = (req,res,next) => {
-  Product.findByPk(req.body.productID).then(product => {
-    product.title = req.body.title  ;
-    product.price = req.body.price ;
-    product.imageUrl =  req.body.imageUrl ;
-    product.description = req.body.description ;
-    return product.save();
-  }).then(() => res.redirect('/') )
-  .catch(err => {
-    console.log(err) ;
-  });
-  };
-
+ 
   exports.PostDeleteProduct = (req , res , next) => {
   Product.destroy({where: {productID: req.body.productId}})
   .then(() => res.redirect('/'))
@@ -78,3 +65,25 @@ exports.PostEditProduct = (req, res, next) => {
   });
   };
 
+
+
+  exports.PostFinishedEdit = (req, res, next) => {
+    Product.findByPk(req.body.productID)
+      .then(product => {
+        console.log(req.body.price) ;
+        return product.update({
+          title: req.body.title,
+          price: req.body.price,
+          imageUrl: req.body.imageUrl,
+          description: req.body.description
+        });
+      })
+      .then(() => {
+        res.redirect('/');
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).send('Something went wrong');
+      });
+  };
+  

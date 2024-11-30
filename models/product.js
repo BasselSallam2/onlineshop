@@ -16,7 +16,6 @@ const Product = sql.define('product' , {
   },
   price:{
     type:Sequelize.DOUBLE ,
-    primaryKey: true
   } ,
   imageUrl:{
     type:Sequelize.STRING ,

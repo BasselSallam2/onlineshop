@@ -45,7 +45,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-Products.belongsTo(Users , {constraints : true , onDelete: 'CASCADE'}) ;
+Products.belongsTo(Users , { onDelete: 'CASCADE'}) ;
 Users.hasMany(Product) ;
 Users.hasOne(Cart) ;
 Cart.belongsTo(Users) ;
@@ -77,6 +77,11 @@ sequelize.sync()
         return user.createCart(); // Create a cart if none exists
       }
     });
+  })
+  .then(()=> {
+    return Product.findByPk(1) ;
+  })
+  .then((prod) => {
   })
   .then(() => {
     app.listen(3000);
