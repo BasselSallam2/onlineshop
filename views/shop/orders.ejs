@@ -1,32 +1,25 @@
 <%- include('../includes/head.ejs') %>
-<div class="container">
-  <h1>Your Orders</h1>
-  <ul class="orders">
-    <% if (orders.length > 0) { %>
-      <% orders.forEach(order => { %> <!-- Iterate over each order -->
-        <li class="order">
-          <h2>Order ID: <%= order.id %></h2>
-          <ul class="order-items">
-            <% let totalCost = 0; %>
-            <% order.products.forEach(product => { %> <!-- Iterate over each product in the order -->
-              <% totalCost += product.price * product.OrderItem.quantity; %>
-              <li class="order-item">
-                <img src="<%= product.imageUrl %>" alt="<%= product.title %>" class="product-image" />
-                <div>
-                  <h3><%= product.title %></h3>
-                  <p>Price: $<%= product.price.toFixed(2) %></p>
-                  <p>Quantity: <%= product.OrderItem.quantity %></p> <!-- Access the quantity from the OrderItem -->
-                  <p>Total: $<%= (product.price * product.OrderItem.quantity).toFixed(2) %></p> <!-- Calculate total cost for the product -->
-                </div>
-              </li>
-            <% }); %>
-          </ul>
-          <h3>Total Order Cost: $<%= totalCost.toFixed(2) %></h3> <!-- Total cost for the entire order -->
-        </li>
-      <% }); %>
-    <% } else { %>
-      <p>No orders found.</p>
-    <% } %>
-  </ul>
-</div>
-<%- include('../includes/end.ejs') %>
+    <link rel="stylesheet" href="/css/orders.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (orders.length <= 0) { %>
+                <h1>Nothing there!</h1>
+            <% } else { %>
+                <ul class="orders">
+                    <% orders.forEach(order => { %>
+                        <li class="orders__item">
+                            <h1>Order - # <%= order._id %></h1>
+                            <ul class="orders__products">
+                                <% order.products.forEach(p => { %>
+                                    <li class="orders__products-item"><%= p.product.title %> (<%= p.quantity %>)</li>
+                                <% }); %>
+                            </ul>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>

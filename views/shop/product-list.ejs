@@ -27,13 +27,11 @@
                                     </p>
                                 </div>
                                 <div class="card__actions">
-                                    <form action="/products/<%= product.productID %> " method="POST">
-                                        <button class="btn">Details</button>
-                                    </form>
+                                    <a href="/products/<%= product._id %>" class="btn">Details</a>
+                                    <% if (isAuthenticated) { %>
+                                        <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                                    <% } %>
                                 </div>
-                                <%- include('../includes/add-cart.ejs' , {productID:product.productID , productPRICE : product.price , productURL : product.imageUrl , productTITLE : product.title  }) %>
-                                    
-
                             </article>
                             <% } %>
                     </div>

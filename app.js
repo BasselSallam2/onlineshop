@@ -2,89 +2,76 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const flash = require('connect-flash') ;
 
 const errorController = require('./controllers/error');
+const User = require('./models/user');
 
-const sequelize = require('./util/database') ;
+const csrf = require('csurf') ;
 
-const Products = require('./models/product') ;
-const Users = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cart-item');
-const Order = require('./models/order') ;
-const OrderItem = require('./models/order-item') ;
+const csrfProtection = csrf() ;
+
+const MONGODB_URI =
+  'mongodb+srv://empo:Bassel12@cluster0.jfpug.mongodb.net/';
 
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-const Product = require('./models/product');
-
-
-
+const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
+
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+});
+
+app.use(csrfProtection) ;
+app.use(flash());
 
 app.use((req , res , next) => {
-    Users.findByPk(1) 
-    .then(user => {
-        req.user = user ;
-        next() ;
-    })
-    .catch(err => {
-        console.log(err) ;
-    });
+res.locals.isAuthenticated = req.session.isLoggedIn ;
+res.locals.csrfToken = req.csrfToken() ;
+next() ;
 });
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorController.get404);
 
-Products.belongsTo(Users , { onDelete: 'CASCADE'}) ;
-Users.hasMany(Product) ;
-Users.hasOne(Cart) ;
-Cart.belongsTo(Users) ;
-Cart.belongsToMany(Product , {through: CartItem}) ;
-Product.belongsToMany(Cart , {through: CartItem}) ;
-Order.belongsTo(Users);
-Users.hasMany(Order) ;
-Order.belongsToMany(Product , {through : OrderItem}) ;
-Product.belongsToMany(Order , {through : OrderItem}) ;
-
-
-
-
-
-
-
-sequelize.sync()
-  .then(() => Users.findByPk(1))
-  .then(user => {
-    if (!user) {
-      return Users.create({ name: 'Bassel', email: 'Bassela.sallam@gmail.com' });
-    }
-    return user; // Return the user to the next .then() block
-  })
-  .then(user => {
-    // Now `user` is available again in this block
-    return user.getCart().then(cart => {
-      if (!cart) {
-        return user.createCart(); // Create a cart if none exists
-      }
-    });
-  })
-  .then(()=> {
-    return Product.findByPk(1) ;
-  })
-  .then((prod) => {
-  })
-  .then(() => {
-    app.listen(3000);
+mongoose
+  .connect(MONGODB_URI)
+  .then(result => {
+    app.listen(3000) ;
   })
   .catch(err => {
     console.log(err);

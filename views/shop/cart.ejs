@@ -1,54 +1,34 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
-</head>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
-    <main>
-        <% if (prods.length > 0) { %>
-            <div class="grid">
-                <% for (let item of prods) { %>
-                    <article class="card product-item">
-                        <header class="card__header">
-                            <h1 class="product__title"><%= item.dataValues.title %></h1>
-                        </header>
-                        <div class="card__image">
-                            <img src="<%= item.dataValues.imageUrl %>" alt="<%= item.dataValues.title %>">
-                        </div>
-                        <div class="card__content">
-                            <h2 class="product__price">$<%= item.dataValues.price * item.dataValues.cartItem.dataValues.quantity %> <span>Total Cost</span></h2>
-                            <p class="product__description">Quantity: <%= item.dataValues.cartItem.dataValues.quantity %></p>
-
-                            <!-- Delete Button Form -->
-                            <form action="/cartDeleted" method="POST">
-                                <input type="hidden" name="product_id" value="<%= item.dataValues.productID %>">
-                                <button type="submit" class="delete-button">Delete</button>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (products.length > 0) { %>
+                <ul class="cart__item-list">
+                    <% products.forEach(p => { %>
+                        <li class="cart__item">
+                            <h1><%= p.productId.title %></h1>
+                            <h2>Quantity: <%= p.quantity %></h2>
+                            <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" value="<%= p.productId._id %>" name="productId">
+                                <input type = "hidden" name="_csrf" value="<%=csrfToken%>">
+                                <button class="btn danger" type="submit">Delete</button>
                             </form>
-                        </div>
-                    </article>
-                <% } %>
-            </div>
-        <% } else { %>
-            <h1>Your Cart Is Empty!</h1>
-        <% } %>
-        
-        <!-- Checkout Section -->
-        <% if (prods.length > 0) { %>
-            <div class="checkout">
-                <div class="checkout-total">
-                    <h3>Total of Cart:</h3>
-                    <!-- Calculate the total cost of the cart -->
-                    <% let totalCartPrice = 0; %>
-                    <% prods.forEach(item => { totalCartPrice += (item.dataValues.price * item.dataValues.cartItem.dataValues.quantity) ; }); %>
-                    <h2>$<%= totalCartPrice %></h2>
+                        </li>
+                    <% }) %>
+                </ul>
+                <hr>
+                <div class="centered">
+                    <form action="/create-order" method="POST">
+                        <input type = "hidden" name="_csrf" value="<%=csrfToken%>">
+                        <button type="submit" class="btn">Order Now!</button>
+                    </form>
                 </div>
-
-                <!-- Checkout Form -->
-                <form action="/checkOUT" method="POST">
-                    <button type="submit" class="checkout-button">Checkout</button>
-                </form>
-            </div>
-        <% } %>
-    </main>
-
-<%- include('../includes/end.ejs') %>
+                
+            <% } else { %>
+                <h1>No Products in Cart!</h1>
+            <% } %>
+        </main>
+        <%- include('../includes/end.ejs') %>
